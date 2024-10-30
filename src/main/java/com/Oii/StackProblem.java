@@ -1,11 +1,8 @@
 package com.Oii;
 
+import java.util.List;
 
-import java.util.Scanner;
-
-import static java.util.Arrays.sort;
-
-class Stack {
+class StackProblem {
     public int suffixExpressions(String str) {
             java.util.Stack<Integer> stack = new java.util.Stack<>();
 
@@ -37,9 +34,9 @@ class Stack {
                     i++;
                 }
             }
-            int res = stack.pop();
-            return res;
+            return stack.pop();
     }
+
     public int[] finalPrices(int[] prices) {
         int n = prices.length;
         int[] res = new int[n];
