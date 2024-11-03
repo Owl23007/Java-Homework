@@ -8,6 +8,7 @@ target/
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+.idea/workspace.xml
 *.iws
 *.iml
 *.ipr
@@ -36,5 +37,7 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
 /src/main/java/com/Oii/Main.java
 /src/main/java/com/Oii/Solution.java
+
