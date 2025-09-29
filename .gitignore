@@ -41,3 +41,5 @@ build/
 /src/main/java/com/Oii/Main.java
 /src/main/java/com/Oii/Solution.java
 
+.idea/
+
