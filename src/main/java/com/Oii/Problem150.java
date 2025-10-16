@@ -43,4 +43,61 @@ public class Problem150 {
         }
         return candidate;
     }
+
+    //25.10.15-1 旋转数组 - leetcode-189
+    public void rotate(int[] nums, int k) {
+        k = k % nums.length;
+        int[] clone = nums.clone();
+        for (int i = 0; i < nums.length; i++){
+            nums[(i + k) % nums.length] = clone[i];
+        }
+    }
+
+    // 25.10.16-1 买卖股票的最佳时机 - leetcode-121
+    public int maxProfit(int[] prices) {
+        int[] list = new int[prices.length]; // 存储当前位置卖出股票能得到的最大利润
+        int max = 0;
+        int min = prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            list[i] = Math.max(list[i - 1], prices[i] - min); // 当前位置卖出股票能得到的利润
+            min = Math.min(min, prices[i]);
+            max = Math.max(max, list[i]);
+        }
+        return max;
+
+    }
+
+    // 25.10.16-2 买卖股票的最佳时机 II - leetcode-122
+
+    // 解法1
+    public int maxProfit2(int[] prices) {
+        int n = prices.length;
+
+        int[][] dp = new int[n][2];
+        dp[0][0] = 0;              // 第 i 天不持有股票
+        dp[0][1] = -prices[0];     // 第 i 天持有股票
+
+        for (int i = 1; i < n; i++) {
+            // 第 i 天不持有股票 = [前一天不持有股票] 和 [前一天持有股票 + (卖出)当前价格]  的最大值
+            dp[i][0] = Math.max(dp[i-1][0], dp[i-1][1] + prices[i]);
+            // 第 i 天持有股票 = [前一天持有股票] 和 [前一天不持有股票 -(买入)当前价格] 的最大值
+            dp[i][1] = Math.max(dp[i-1][1], dp[i-1][0] - prices[i]);
+        }
+
+        return dp[n-1][0];
+    }
+
+    // 解法2
+    public int maxProfit3(int[] prices) {
+        int[] list = new int[prices.length];
+        int max = 0;
+        for (int i = 1; i < prices.length; i++) {
+            list[i] = prices[i] - prices[i - 1]; // 当前位置卖出股票能得到的利润
+            if (list[i] > 0) {
+                // 如果当前位置卖出股票能得到的利润大于0，则加上
+                max += list[i];
+            }
+        }
+        return max;
+    }
 }
