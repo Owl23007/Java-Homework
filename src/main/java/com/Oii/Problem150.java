@@ -100,4 +100,38 @@ public class Problem150 {
         }
         return max;
     }
+    // 25.10.17-1 跳跃游戏 - leetcode-55
+    public boolean canJump(int[] nums) {
+        int step = nums.length -1;
+
+        int max = nums[0]; // 当前位置能跳的最大距离
+        for (int i = 0; i <= max; i++){ // 遍历当前位置能跳的最大距离
+            if(max >= step) return true; // 当前位置能跳的最大距离 >= 最后一个位置，则返回true
+            int newMax = i + nums[i];
+            if(newMax > max){
+                max = newMax;
+            }
+        }
+        return max >= step ;
+    }
+
+    // 25.10.17-2 跳跃游戏 II - leetcode-45
+    public int jump(int[] nums) {
+        if (nums.length <= 1) return 0;
+        int len = nums.length - 1;
+        int step = 0; // 当前位置跳的步数
+        int end  = 0; // 当前位置能跳的最大距离
+
+        int nextEnd =0;
+        for (int i = 0; i < len; i++) {
+            nextEnd = Math.max(nextEnd, i + nums[i]); // 更新当前位置能跳的最大距离
+            if (i == end) {
+                // 到达当前位置能跳的最大距离，则说明当前位置跳的步数加1
+                // 当前位置跳的步数加1，并更新当前位置能跳的最大距离
+                step++;
+                end = nextEnd;
+            }
+        }
+        return step;
+    }
 }
