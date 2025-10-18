@@ -1,5 +1,9 @@
 package com.Oii;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.*;
+
 public class Problem150 {
 
     // 25.09.29-1 删除重复元素 - leetcode-26
@@ -133,5 +137,59 @@ public class Problem150 {
             }
         }
         return step;
+
+    }
+
+    // 25.10.18-1 h指数 - leetcode-274
+    public int hIndex(int[] citations) {
+        Arrays.sort(citations);
+        int n = citations.length;
+        for (int i = 0; i < n; i++) {
+            int h = n - i; // 大于h次数的引用的篇数
+            if (citations[i] >= h) { // 如果当前位置的引用次数数大于篇数
+                return h;
+            }
+        }
+        return 0;
+    }
+}
+
+// 25.10.18-2 随机数集合 - leetcode-380
+class RandomizedSet {
+    private final List<Integer> list;
+    private final Map<Integer, Integer> map;
+    private final Random random;
+
+    public RandomizedSet() {
+        list = new ArrayList<>();
+        map = new HashMap<>();
+        random = new Random();
+    }
+
+    public boolean insert(int val) {
+        if (map.containsKey(val)) return false;
+        map.put(val, list.size());
+        list.add(val);
+        return true;
+    }
+
+    public boolean remove(int val) {
+        if (!map.containsKey(val)) return false;
+
+        int index = map.get(val);
+        int lastElement = list.getLast();
+
+        // 将最后一个元素移到被删除的位置
+        list.set(index, lastElement);
+        map.put(lastElement, index);
+
+        // 删除最后一个元素
+        list.removeLast();
+        map.remove(val);
+        return true;
+    }
+
+    public int getRandom() {
+        return list.get(random.nextInt(list.size()));
     }
 }
