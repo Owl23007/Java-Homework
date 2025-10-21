@@ -1,6 +1,8 @@
 package com.Oii;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class Problem150 {
 
@@ -203,6 +205,127 @@ public class Problem150 {
         }
         
         return start;
+    }
+
+    // 25.10.21 - 1  分糖果 leetcode-135
+    public int candy(int[] ratings) {
+        int n = ratings.length;
+        int[] pay = new int[n]; // 每个位置的糖果数
+
+        Arrays.fill(pay, 1);
+
+        for (int i = 1; i <n; i++) {
+            // 如果当前位置的评分比前一个位置的评分高，则当前位置的糖果数比前一个位置的糖果数多1
+            if (ratings[i] > ratings[i - 1]) {
+                pay[i] = pay[i - 1] + 1;
+            }
+        }
+
+        for (int i = n - 2; i >= 0; i--) {
+            // 如果当前位置的评分比后一个位置的评分高，则当前位置的糖果数比后一个位置的糖果数多1
+            if (ratings[i] > ratings[i + 1]) {
+                pay[i] = Math.max(pay[i], pay[i + 1] + 1);
+            }
+        }
+
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans += pay[i];
+        }
+
+        return ans;
+    }
+
+    // 25.10.21 - 2  接雨水 leetcode-42
+    // 方法一 : 分割成左右两个数组，分别求解
+    public int trap(int[] height) {
+        int n = height.length;
+
+        int maxIndex = -1;
+        int max = -1;
+        for (int i = 0; i < n; i++) {
+            if (height[i] > max) {
+                max = height[i];
+                maxIndex = i;
+            }
+        }
+
+        int sum = 0;
+
+        sum += findLeft(maxIndex, height);
+        sum += findRight(maxIndex, height);
+
+        return sum;
+    }
+
+    public int findLeft(int maxIndex, int[] height) {
+        if (maxIndex == 0) {
+            return 0;
+        }
+        int newMaxIndex = -1;
+        int newMax = -1;
+        for (int i = 0; i < maxIndex; i++) { // 遍历当前位置的左边, 寻找当前位置的左边的最大值
+            if (height[i] > newMax) {
+                newMax = height[i];
+                newMaxIndex = i;
+            }
+        }
+        int sum = 0;
+        for (int i = newMaxIndex + 1; i < maxIndex; i++) { // 遍历当前位置的左边, 寻找当前位置的左边的累加和
+            sum += newMax - height[i];
+        }
+        sum += findLeft(newMaxIndex, height);
+        return sum;
+    }
+
+    public int  findRight(int maxIndex, int[] height) {
+        if (maxIndex == height.length - 1) {
+            return 0;
+        }
+        int newMaxIndex = -1;
+        int newMax = -1;
+        for (int i = maxIndex + 1; i < height.length; i++) { // 遍历当前位置的右边, 寻找当前位置的右边的最大值
+            if (height[i] > newMax) {
+                newMax = height[i];
+                newMaxIndex = i;
+            }
+        }
+        int sum = 0;
+        for (int i = newMaxIndex - 1; i > maxIndex; i--) { // 遍历当前位置的右边, 寻找当前位置的右边的累加和
+            sum += newMax - height[i];
+        }
+
+        sum += findRight(newMaxIndex, height);
+        return sum;
+    }
+
+    // 方法二: 双指针
+    public int trap_1(int[] height) {
+        int left = 0;
+        int right = height.length - 1;
+
+        int leftHeight = height[0];
+        int rightHeight = height[right];
+
+        int sum = 0;
+        while (left < right) {
+            if (height[left] < height[right]) {
+                if (height[left] > leftHeight) {
+                    sum += leftHeight - height[left];
+                } else {
+                    leftHeight = height[left];
+                }
+                left++;
+            } else {
+                if (height[right] < rightHeight) {
+                    sum += rightHeight - height[right];
+                } else {
+                    rightHeight = height[right];
+                }
+                right--;
+            }
+        }
+        return sum;
     }
 }
 
