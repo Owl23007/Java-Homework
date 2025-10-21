@@ -1,7 +1,5 @@
 package com.Oii;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.*;
 
 public class Problem150 {
@@ -52,7 +50,7 @@ public class Problem150 {
     public void rotate(int[] nums, int k) {
         k = k % nums.length;
         int[] clone = nums.clone();
-        for (int i = 0; i < nums.length; i++){
+        for (int i = 0; i < nums.length; i++) {
             nums[(i + k) % nums.length] = clone[i];
         }
     }
@@ -83,12 +81,12 @@ public class Problem150 {
 
         for (int i = 1; i < n; i++) {
             // 第 i 天不持有股票 = [前一天不持有股票] 和 [前一天持有股票 + (卖出)当前价格]  的最大值
-            dp[i][0] = Math.max(dp[i-1][0], dp[i-1][1] + prices[i]);
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
             // 第 i 天持有股票 = [前一天持有股票] 和 [前一天不持有股票 -(买入)当前价格] 的最大值
-            dp[i][1] = Math.max(dp[i-1][1], dp[i-1][0] - prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] - prices[i]);
         }
 
-        return dp[n-1][0];
+        return dp[n - 1][0];
     }
 
     // 解法2
@@ -104,19 +102,20 @@ public class Problem150 {
         }
         return max;
     }
+
     // 25.10.17-1 跳跃游戏 - leetcode-55
     public boolean canJump(int[] nums) {
-        int step = nums.length -1;
+        int step = nums.length - 1;
 
         int max = nums[0]; // 当前位置能跳的最大距离
-        for (int i = 0; i <= max; i++){ // 遍历当前位置能跳的最大距离
-            if(max >= step) return true; // 当前位置能跳的最大距离 >= 最后一个位置，则返回true
+        for (int i = 0; i <= max; i++) { // 遍历当前位置能跳的最大距离
+            if (max >= step) return true; // 当前位置能跳的最大距离 >= 最后一个位置，则返回true
             int newMax = i + nums[i];
-            if(newMax > max){
+            if (newMax > max) {
                 max = newMax;
             }
         }
-        return max >= step ;
+        return max >= step;
     }
 
     // 25.10.17-2 跳跃游戏 II - leetcode-45
@@ -124,9 +123,9 @@ public class Problem150 {
         if (nums.length <= 1) return 0;
         int len = nums.length - 1;
         int step = 0; // 当前位置跳的步数
-        int end  = 0; // 当前位置能跳的最大距离
+        int end = 0; // 当前位置能跳的最大距离
 
-        int nextEnd =0;
+        int nextEnd = 0;
         for (int i = 0; i < len; i++) {
             nextEnd = Math.max(nextEnd, i + nums[i]); // 更新当前位置能跳的最大距离
             if (i == end) {
@@ -152,7 +151,61 @@ public class Problem150 {
         }
         return 0;
     }
+
+    // 25.10.20-1 除自己的乘积 - leetcode-238
+    public int[] productExceptSelf(int[] nums) {
+        int[]ans = new int[nums.length];
+        Arrays.fill(ans, 1);
+
+        int left = 1;
+        int right = 1;
+        for (int i = 0; i < nums.length; i++) {
+            ans[i] = ans[i] * left;
+            ans[nums.length - 1 - i] = ans[nums.length - 1 - i] * right;
+            left *= nums[i];   // 当前位置的左边的乘积
+            right *= nums[nums.length - 1 - i]; // 当前位置的右边的乘积
+        }
+
+        return ans;
+    }
+
+    // 25.10.20-2 加油站 - leetcode-134
+    // 关键点在于 如果总油量大于总消耗，则一定存在一个位置，使得从该位置开始，可以完成环路
+    // 所以只用遍历一遍，找到一个位置，使得从该位置开始，可以到达最后一个位置
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        int totalGas = 0;
+        int totalCost = 0;
+        
+        // 计算总油量和总消耗
+        for (int i = 0; i < gas.length; i++) {
+            totalGas += gas[i];
+            totalCost += cost[i];
+        }
+        
+        // 如果总油量小于总消耗，无法完成环路
+        if (totalGas < totalCost) {
+            return -1;
+        }
+        
+        int currentGas = 0;
+        int start = 0;
+        
+        // 寻找合适的起点
+        for (int i = 0; i < gas.length; i++) {
+            currentGas += gas[i] - cost[i];
+            
+            // 如果当前油量为负，说明无法从当前起点到达下一个站点
+            if (currentGas < 0) {
+                // 将起点设为下一个站点
+                start = i + 1;
+                currentGas = 0;
+            }
+        }
+        
+        return start;
+    }
 }
+
 
 // 25.10.18-2 随机数集合 - leetcode-380
 class RandomizedSet {
