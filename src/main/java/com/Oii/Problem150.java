@@ -156,7 +156,7 @@ public class Problem150 {
 
     // 25.10.20-1 除自己的乘积 - leetcode-238
     public int[] productExceptSelf(int[] nums) {
-        int[]ans = new int[nums.length];
+        int[] ans = new int[nums.length];
         Arrays.fill(ans, 1);
 
         int left = 1;
@@ -177,25 +177,25 @@ public class Problem150 {
     public int canCompleteCircuit(int[] gas, int[] cost) {
         int totalGas = 0;
         int totalCost = 0;
-        
+
         // 计算总油量和总消耗
         for (int i = 0; i < gas.length; i++) {
             totalGas += gas[i];
             totalCost += cost[i];
         }
-        
+
         // 如果总油量小于总消耗，无法完成环路
         if (totalGas < totalCost) {
             return -1;
         }
-        
+
         int currentGas = 0;
         int start = 0;
-        
+
         // 寻找合适的起点
         for (int i = 0; i < gas.length; i++) {
             currentGas += gas[i] - cost[i];
-            
+
             // 如果当前油量为负，说明无法从当前起点到达下一个站点
             if (currentGas < 0) {
                 // 将起点设为下一个站点
@@ -203,7 +203,7 @@ public class Problem150 {
                 currentGas = 0;
             }
         }
-        
+
         return start;
     }
 
@@ -214,7 +214,7 @@ public class Problem150 {
 
         Arrays.fill(pay, 1);
 
-        for (int i = 1; i <n; i++) {
+        for (int i = 1; i < n; i++) {
             // 如果当前位置的评分比前一个位置的评分高，则当前位置的糖果数比前一个位置的糖果数多1
             if (ratings[i] > ratings[i - 1]) {
                 pay[i] = pay[i - 1] + 1;
@@ -278,7 +278,7 @@ public class Problem150 {
         return sum;
     }
 
-    public int  findRight(int maxIndex, int[] height) {
+    public int findRight(int maxIndex, int[] height) {
         if (maxIndex == height.length - 1) {
             return 0;
         }
@@ -326,6 +326,84 @@ public class Problem150 {
             }
         }
         return sum;
+    }
+
+    // 25.10.21 - 3  随机数生成器 leetcode-470
+    private int rand7() {
+        return (int) (Math.random() % 7 + 1); // 生成1-7的随机数
+    }
+
+    public int rand10() {
+        int ans = rand2();
+        for (int i = 0; i < 3; i++) {
+            ans <<= 1;
+            ans ^= rand2();
+        }
+        return (ans <= 10 && ans > 0) ? ans : rand10();
+    }
+
+    public int rand2() {
+        int ans = rand7();
+        return ans == 7 ? rand2() : ans % 2;
+    }
+
+    // 25.10.22 - 1  罗马数字转整数 leetcode-13
+
+    public int romanToInt(String s) {
+        int count = 0;
+        int level = 0;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            int currentLevel = -1;
+            switch (s.charAt(i)) {
+                case 'I':
+                    currentLevel = 1;
+                    break;
+                case 'V':
+                    currentLevel = 5;
+                    break;
+                case 'X':
+                    currentLevel = 10;
+                    break;
+                case 'L':
+                    currentLevel = 50;
+                    break;
+                case 'C':
+                    currentLevel = 100;
+                    break;
+                case 'D':
+                    currentLevel = 500;
+                    break;
+                case 'M':
+                    currentLevel = 1000;
+                    break;
+                default:
+            }
+            if (currentLevel >= level) {
+                count += currentLevel;
+                level = currentLevel;
+            } else {
+                count -= currentLevel;
+            }
+
+        }
+        return count;
+    }
+
+    // 25.10.22 - 2  整数转罗马数字 leetcode-12
+    public String intToRoman(int num) {
+        StringBuilder ans = new StringBuilder();
+        int[] factor = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+        String[] symbol = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+        while (num > 0) {
+            for (int i = 0; i < factor.length; i++) {
+                if (num >= factor[i]) {
+                    ans.append(symbol[i]);
+                    num -= factor[i];
+                    break;
+                }
+            }
+        }
+        return ans.toString();
     }
 }
 
