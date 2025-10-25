@@ -1,10 +1,9 @@
-package com.Oii;
+package com.Oii.Problem150;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class Problem150 {
+public class ArrayAndStringSolution {
 
     // 25.09.29-1 删除重复元素 - leetcode-26
     public int removeDuplicates(int[] nums) {
@@ -403,6 +402,85 @@ public class Problem150 {
                 }
             }
         }
+        return ans.toString();
+    }
+
+    // 25.10.24 - 1  最后一个单词的长度 leetcode - 58
+    public int lengthOfLastWord(String s) {
+        s = s.trim();
+        int count = 0;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            if (s.charAt(i) == ' ') {
+                break;
+            }
+            count++;
+        }
+        return count;
+    }
+
+    // 25.10.24 - 2  最长公共前缀 leetcode - 14
+    public String longestCommonPrefix(String[] strs) {
+        for (int i = 0; i < strs[0].length(); i++){
+            for (int j = 1; j < strs.length; j++) {
+                if (i >= strs[j].length() || strs[j].charAt(i) != strs[0].charAt(i)) {
+                    return strs[0].substring(0, i);
+                }
+            }
+        }
+        return strs[0];
+    }
+
+    // 25.10.25 - 1 反转字符串中的单词  leetcode - 151
+    public String reverseWords(String s) {
+        List<String> list = new ArrayList<>();
+
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0;i<s.length();i++){
+            if(s.charAt(i) == ' '){
+                if(!sb.isEmpty()) {
+                    list.add(sb.toString());
+                }
+                sb.setLength(0);
+            } else {
+                sb.append(s.charAt(i));
+            }
+        }
+
+        if(!sb.isEmpty()){
+            list.add(sb.toString());
+            sb.setLength(0);
+        }
+
+        for (int i = list.size() - 1; i >= 0; i--) {
+            if (i == 0) {
+                sb.append(list.get(i));
+                break;
+            }
+            sb.append(list.get(i)).append(" ");
+        }
+        return sb.toString();
+    }
+
+    public String convert(String s, int numRows) {
+        if(numRows <= 1) return s;
+        int turn = 2*numRows -2;
+
+
+        StringBuilder ans = new StringBuilder();
+        for (int i = 0; i < numRows; i++) {
+            int p = i;
+            int back = turn-i;
+
+            while (p<s.length()){
+                ans.append(s.charAt(p));
+                if(back%turn !=0 && back< s.length()){
+                    ans.append(s.charAt(back));
+                }
+                p += turn;
+                back+= turn;
+            }
+        }
+
         return ans.toString();
     }
 }
