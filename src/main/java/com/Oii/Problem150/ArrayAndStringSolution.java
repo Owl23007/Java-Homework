@@ -420,7 +420,7 @@ public class ArrayAndStringSolution {
 
     // 25.10.24 - 2  最长公共前缀 leetcode - 14
     public String longestCommonPrefix(String[] strs) {
-        for (int i = 0; i < strs[0].length(); i++){
+        for (int i = 0; i < strs[0].length(); i++) {
             for (int j = 1; j < strs.length; j++) {
                 if (i >= strs[j].length() || strs[j].charAt(i) != strs[0].charAt(i)) {
                     return strs[0].substring(0, i);
@@ -435,9 +435,9 @@ public class ArrayAndStringSolution {
         List<String> list = new ArrayList<>();
 
         StringBuilder sb = new StringBuilder();
-        for(int i = 0;i<s.length();i++){
-            if(s.charAt(i) == ' '){
-                if(!sb.isEmpty()) {
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == ' ') {
+                if (!sb.isEmpty()) {
                     list.add(sb.toString());
                 }
                 sb.setLength(0);
@@ -446,7 +446,7 @@ public class ArrayAndStringSolution {
             }
         }
 
-        if(!sb.isEmpty()){
+        if (!sb.isEmpty()) {
             list.add(sb.toString());
             sb.setLength(0);
         }
@@ -462,26 +462,103 @@ public class ArrayAndStringSolution {
     }
 
     public String convert(String s, int numRows) {
-        if(numRows <= 1) return s;
-        int turn = 2*numRows -2;
+        if (numRows <= 1) return s;
+        int turn = 2 * numRows - 2;
 
 
         StringBuilder ans = new StringBuilder();
         for (int i = 0; i < numRows; i++) {
             int p = i;
-            int back = turn-i;
+            int back = turn - i;
 
-            while (p<s.length()){
+            while (p < s.length()) {
                 ans.append(s.charAt(p));
-                if(back%turn !=0 && back< s.length()){
+                if (back % turn != 0 && back < s.length()) {
                     ans.append(s.charAt(back));
                 }
                 p += turn;
-                back+= turn;
+                back += turn;
             }
         }
 
         return ans.toString();
+    }
+
+    // 25.10.26 -1 字符串匹配 leetcode - 28
+    public int strStr(String haystack, String needle) {
+        int m = haystack.length(), n = needle.length();
+        if (m < n) return -1;
+        for (int i = 0; i + n <= m; i++) {
+            if (haystack.substring(i, i + n).equals(needle)) return i;
+        }
+        return -1;
+    }
+
+    // 25.10.26 - 2 文本左右对齐 leetcode - 68
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        List<String> ans = new ArrayList<>();
+        int currentLength = 0; // 当前行长度
+        int start = 0; // 行开始位置
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < words.length; i++) {
+            if (currentLength + words[i].length()+1 > maxWidth) { // 当前行已经超过最大宽度
+                int space = maxWidth - currentLength; // 当前行剩余空间
+                int spaceCount = i - start - 1; // 当前行单词个数减1
+                for (int j = start; j < i; j++) {
+                    if(spaceCount == 0){
+                        sb.append(words[j]);
+                        sb.append(" ".repeat(maxWidth-words[j].length()));
+                        break;
+
+                    }
+                    if(j == i-1) {  // 最后一个单词
+                        sb.append(words[j]);
+                        break;
+                    }
+                    if (spaceCount > 0) {
+                        int spacePer = space / spaceCount; // 平均分配空格
+                        int spaceLeft = space % spaceCount; // 剩余空格
+                        sb.append(words[j]);
+                        if (j - start < spaceLeft) {
+                            sb.append(" ");
+                        }
+                        sb.append(" ".repeat( spacePer+1));
+                    }
+                }
+                currentLength = 0;
+                ans.add(sb.toString());
+                sb.setLength(0);
+            }
+
+            if(currentLength == 0){ // 当前行第一个单词
+                start = i;
+                currentLength += words[i].length();
+                continue;
+            }
+
+            currentLength += words[i].length()+1;
+        }
+
+        if (currentLength > 0) { // 最后一行
+            currentLength = 0;
+            for (int i = start; i < words.length; i++) {
+                sb.append(words[i]);
+                if (i != words.length - 1) {
+                    sb.append(" ");
+                    currentLength += words[i].length()+1;
+                } else {
+                    currentLength += words[i].length();
+                    sb.append(" ".repeat(maxWidth - currentLength));
+                }
+            }
+            ans.add(sb.toString());
+        }
+
+        ans.removeIf(String::isEmpty);
+
+
+        return ans;
     }
 }
 
