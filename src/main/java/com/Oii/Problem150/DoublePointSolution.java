@@ -39,6 +39,8 @@ public class DoublePointSolution {
         return new int[]{};
     }
 
+
+    // 25.10.28 - 2 盛最多水的容器 leetcode - 11
     public int maxArea(int[] height) {
         int left = 0, right = height.length - 1;
         int max = 0;
@@ -57,6 +59,7 @@ public class DoublePointSolution {
         return max;
     }
 
+    // 25.10.28 - 3 三数之和 leetcode - 15
     public List<List<Integer>> threeSum(int[] nums) {
         Arrays.sort(nums);
         List<List<Integer>> res = new ArrayList<>();
@@ -95,6 +98,8 @@ public class DoublePointSolution {
         return res;
     }
 
+
+    // 在leetcode上发现的小 trick
     public List<List<Integer>> threeSum_2(int[] nums) {
         return new java.util.AbstractList<List<Integer>>() {
             private List<List<Integer>> res;
