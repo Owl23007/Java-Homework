@@ -1,6 +1,6 @@
 package com.Oii.Problem150;
 
-import java.util.HashMap;
+import java.util.*;
 
 public class HashSolution {
 
@@ -89,4 +89,54 @@ public class HashSolution {
         }
         return true;
     }
+
+    // 25.11.05  - 1 有效的字母异位词 leetcode - 242
+    public boolean isAnagram(String s, String t) {
+        HashMap<Character, Integer> map = new HashMap<>();
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            map.put(c, map.getOrDefault(c, 0) + 1);
+        }
+
+        for (int i = 0; i < t.length(); i++) {
+            char c = t.charAt(i);
+            if (map.containsKey(c)) {
+                map.put(c, map.get(c) - 1);
+                if (map.get(c) == 0) {
+                    map.remove(c);
+                }
+            } else {
+                return false;
+            }
+        }
+
+        return map.isEmpty();
+    }
+
+
+    // 25.11.05 - 2 字母异位词分组 leetcode - 49
+    public List<List<String>> groupAnagrams(String[] strs) {
+        HashMap<String, List<String>> map = new HashMap<>();
+        for (String str : strs) {
+            char[] chars = str.toCharArray();
+            Arrays.sort(chars);
+            String key = new String(chars);
+            map.computeIfAbsent(key, k -> new ArrayList<>()).add(str);
+        }
+        return new ArrayList<>(map.values());
+    }
+
+    // 25.11.05 - 3 两数之和 leetcode - 1
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> set = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            int complement = target - nums[i];
+            if (set.containsKey(complement)) {
+                return new int[]{set.get(complement), i};
+            }
+            set.put(nums[i], i);
+        }
+        return new int[0];
+    }
+
 }
