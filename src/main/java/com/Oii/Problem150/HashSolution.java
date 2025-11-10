@@ -139,4 +139,85 @@ public class HashSolution {
         return new int[0];
     }
 
+    //25.11.06 - 1 快乐数 leetcode - 202
+    public boolean isHappy(int n) {
+        int slow = n;
+        int fast = n;
+        while (true) {
+            slow = findSquare(slow);
+            fast = findSquare(findSquare(fast));
+            if (slow == fast) {
+                return slow == 1;
+            }
+            if (slow == 1 || fast == 1) {
+                return true;
+            }
+            if (slow == 4 || fast == 4) {
+                return false;
+            }
+        }
+
+    }
+    public int findSquare(int n) {
+        int sum = 0;
+        while (n > 0) {
+            int digit = n % 10;
+            sum += digit * digit;
+            n /= 10;
+        }
+        return sum;
+    }
+
+    // 25.11.06 - 2 存在重复元素 II leetcode - 219
+    public boolean containsNearbyDuplicate(int[] nums, int k) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (map.containsKey(nums[i]) && i - map.get(nums[i]) <= k) {
+                return true;
+            }
+            map.put(nums[i], i);
+        }
+        return false;
+    }
+
+    public boolean containsNearbyDuplicate2(int[] nums, int k) {
+        Set<Integer> set = new HashSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (set.size()>= k){
+                set.remove(nums[i - k - 1]);
+            }
+            if (set.contains(nums[i])) {
+                return true;
+            }
+            set.add(nums[i]);
+        }
+        return false;
+    }
+
+    public int longestConsecutive(int[] nums) {
+        if (nums.length == 0) return 0;
+
+        Set<Integer> set = new TreeSet<>();
+        for (int num : nums) {
+            set.add(num);
+        }
+
+        int res = 1; // 至少有一个数时，最小长度为1
+        int count = 1; // 当前序列长度从1开始
+
+        Integer last = null;
+        for (int num : set) {
+            if (last == null) {
+                last = num;
+            } else if (num == last + 1) {
+                count++;
+            } else {
+                res = Math.max(res, count);
+                count = 1; // 重新开始计数
+            }
+            last = num;
+        }
+        res = Math.max(res, count);
+        return res;
+    }
 }
