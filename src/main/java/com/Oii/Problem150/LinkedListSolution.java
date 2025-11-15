@@ -165,4 +165,48 @@ public class LinkedListSolution {
         }
         return dummy.next;
     }
+
+    // 25.11.15 - 1 K 个一组翻转链表 leetcode - 25
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode dummy = new ListNode(0, head);
+        ListNode tail = dummy;
+        ListNode pre = dummy;
+        int count = 0;
+        while (tail != null) {
+            if ((count - 1) % k == 0) {
+                ListNode start = pre.next;
+                for (int i = 0; i < k - 1; i++) {
+                    ListNode then = start.next;
+                    start.next = then.next;
+                    then.next = pre.next;
+                    pre.next = then;
+                }
+                pre = start;
+                tail = start;
+            }
+            tail = tail.next;
+            count++;
+        }
+
+        return dummy.next;
+    }
+
+    // 25.11.15 - 2 删除链表的倒数第 N 个结点 leetcode - 19
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode dummy = new ListNode(0, head);
+        ListNode slow = dummy;
+        ListNode fast = head;
+        while (n >= 0 && fast != null) {
+            fast = fast.next;
+            n--;
+        }
+
+        while (fast != null) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+        slow.next = slow.next.next;
+
+        return dummy.next;
+    }
 }
