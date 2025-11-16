@@ -209,4 +209,60 @@ public class LinkedListSolution {
 
         return dummy.next;
     }
+
+    // 25.11.16 -1 删除链表中重复的结点 leetcode - 83
+    public ListNode deleteDuplicates(ListNode head) {
+        ListNode dummy = new ListNode(0, head);
+        ListNode pre = dummy; // 记录上一个节点
+
+        while(head != null){
+           if (head.next != null && head.val == head.next.val){
+               while (head.next != null && head.val == head.next.val){
+                   head = head.next;
+               }
+               pre.next = head.next;
+           }else {
+               pre = head;
+           }
+            head = head.next;
+        }
+        return dummy.next;
+    }
+
+    // 25.11.16 - 2 旋转链表 leetcode - 61
+    public ListNode rotateRight(ListNode head, int k) {
+        if (head == null || head.next == null|| k == 0) {
+            return head;
+        }
+
+        int n = 1;
+        ListNode tail = head;
+        while (tail.next != null) {
+            tail = tail.next;
+            n++;
+        }
+
+        k = k % n;
+
+        ListNode dummy = new ListNode(0, head);
+        ListNode left = head;
+        ListNode right = head;
+
+        while (k > 0) {
+            right = right.next;
+            if (right == null) {
+                right = head;
+            }
+            k--;
+        }
+
+        while (right.next != null) {
+            left = left.next;
+            right = right.next;
+        }
+        right.next = dummy.next;
+        dummy.next = left.next;
+        left.next = null;
+        return dummy.next;
+    }
 }
