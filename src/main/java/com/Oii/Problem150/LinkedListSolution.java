@@ -1,6 +1,8 @@
 package com.Oii.Problem150;
 
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 public class LinkedListSolution {
@@ -70,11 +72,11 @@ public class LinkedListSolution {
 
         ListNode p = res;
 
-        while (p1 != null && p2!= null){
-            if (p1.val < p2.val){
+        while (p1 != null && p2 != null) {
+            if (p1.val < p2.val) {
                 p.next = p1;
                 p1 = p1.next;
-            }else{
+            } else {
                 p.next = p2;
                 p2 = p2.next;
             }
@@ -215,15 +217,15 @@ public class LinkedListSolution {
         ListNode dummy = new ListNode(0, head);
         ListNode pre = dummy; // 记录上一个节点
 
-        while(head != null){
-           if (head.next != null && head.val == head.next.val){
-               while (head.next != null && head.val == head.next.val){
-                   head = head.next;
-               }
-               pre.next = head.next;
-           }else {
-               pre = head;
-           }
+        while (head != null) {
+            if (head.next != null && head.val == head.next.val) {
+                while (head.next != null && head.val == head.next.val) {
+                    head = head.next;
+                }
+                pre.next = head.next;
+            } else {
+                pre = head;
+            }
             head = head.next;
         }
         return dummy.next;
@@ -231,7 +233,7 @@ public class LinkedListSolution {
 
     // 25.11.16 - 2 旋转链表 leetcode - 61
     public ListNode rotateRight(ListNode head, int k) {
-        if (head == null || head.next == null|| k == 0) {
+        if (head == null || head.next == null || k == 0) {
             return head;
         }
 
@@ -264,5 +266,77 @@ public class LinkedListSolution {
         dummy.next = left.next;
         left.next = null;
         return dummy.next;
+    }
+
+    // 25.11.17 - 1 分隔列表 leetcode - 86
+    public ListNode partition(ListNode head, int x) {
+        // 创建两个虚拟头节点，分别用于存储小于x和大于等于x的节点
+        ListNode dummyLess = new ListNode(0);
+        ListNode dummyGreater = new ListNode(0);
+
+        ListNode currLess = dummyLess;
+        ListNode currGreater = dummyGreater;
+
+        // 遍历原链表
+        while (head != null) {
+            if (head.val < x) {
+                // 当前节点值小于x，接到less链表
+                currLess.next = head;
+                currLess = currLess.next;
+            } else {
+                // 当前节点值大于等于x，接到greater链表
+                currGreater.next = head;
+                currGreater = currGreater.next;
+            }
+            head = head.next;
+        }
+
+        // 将greater链表的尾部置空，避免形成环
+        currGreater.next = null;
+        // 连接两个链表
+        currLess.next = dummyGreater.next;
+
+        // 返回合并后链表的头节点
+        return dummyLess.next;
+    }
+}
+
+// 25.11.17 - 2 LRU缓存机制 leetcode - 146
+class LRUCache {
+    int capacity;
+
+    Deque<Integer> keys;
+    Map<Integer, Integer> values;
+
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        keys = new LinkedList<>();
+        values = new HashMap<>();
+    }
+
+    public int get(int key) {
+        if (!values.containsKey(key)) {
+            return -1;
+        }
+        keys.remove(key);
+        keys.addFirst(key);
+        return values.get(key);
+    }
+
+    public void put(int key, int value) {
+        if (values.containsKey(key)) {
+            // 更新
+            values.put(key, value);
+            keys.remove(key);
+            keys.addFirst(key);
+        } else {
+            // 新增
+            if (keys.size() == capacity) {
+                int last = keys.removeLast();
+                values.remove(last);
+            }
+            keys.addFirst(key);
+            values.put(key, value);
+        }
     }
 }
