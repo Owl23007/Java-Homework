@@ -1,9 +1,6 @@
 package com.Oii.Problem150;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
 public class BinaryTreeSolution {
     public class TreeNode {
@@ -99,10 +96,12 @@ public class BinaryTreeSolution {
 
         return true;
     }
+
     public boolean isSymmetric_2(TreeNode root) {
         if (root == null) return true;
         return isSymmetric(root.left, root.right);
     }
+
     public boolean isSymmetric(TreeNode left, TreeNode right) {
         if (left == null && right == null) return true;
         if (left == null || right == null) return false;
@@ -112,5 +111,129 @@ public class BinaryTreeSolution {
         return leftTag && rightTag;
     }
 
+    // 25.11.19 - 1 从前序与中序遍历序列构造二叉树 leetcode - 105
+
+    // 将 inorderMap 作为成员变量，避免在递归中反复传递
+    private Map<Integer, Integer> inorderMap;
+
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        // 创建一个哈希表存储中序遍历的值和索引
+        this.inorderMap = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++) {
+            inorderMap.put(inorder[i], i);
+        }
+        // 调用辅助函数，初始时处理整个数组
+        return buildTree(preorder, 0, preorder.length - 1,
+                inorder, 0, inorder.length - 1);
+    }
+
+    private TreeNode buildTree(int[] preorder, int preStart, int preEnd,
+                               int[] inorder, int inStart, int inEnd) {
+        // 如果范围无效，则返回 null
+        if (preStart > preEnd || inStart > inEnd) {
+            return null;
+        }
+
+        // 前序遍历的第一个元素就是当前子树的根节点
+        int rootVal = preorder[preStart];
+        TreeNode root = new TreeNode(rootVal);
+
+        // 使用哈希表 O(1) 时间找到根节点在中序遍历中的索引
+        // 不需要再传入 inorder 数组，因为我们不再遍历它
+        int index = inorderMap.get(rootVal);
+
+        // 计算左子树的节点数量
+        int leftSubtreeSize = index - inStart;
+
+        // 递归构建左子树
+        // 左子树的前序范围: [preStart + 1, preStart + leftSubtreeSize]
+        // 左子树的中序范围: [inStart, index - 1]
+        root.left = buildTree(preorder, preStart + 1, preStart + leftSubtreeSize,
+                inorder, inStart, index - 1);
+
+        // 递归构建右子树
+        // 右子树的前序范围: [preStart + leftSubtreeSize + 1, preEnd]
+        // 右子树的中序范围: [index + 1, inEnd]
+        root.right = buildTree(preorder, preStart + leftSubtreeSize + 1, preEnd,
+                inorder, index + 1, inEnd);
+
+        return root;
+    }
+
+    // 25.11.19 - 2 从中序与后序遍历序列构造二叉树 leetcode - 106
+    private Map<Integer, Integer> inorderMap_2;
+
+    public TreeNode buildTree_2(int[] inorder, int[] postorder) {
+        // 创建一个哈希表存储中序遍历的值和索引
+        this.inorderMap_2 = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++) {
+            inorderMap_2.put(inorder[i], i);
+        }
+        // 调用辅助函数，初始时处理整个数组
+        return buildTree_2(postorder, 0, postorder.length - 1,
+                inorder, 0, inorder.length - 1);
+    }
+
+    private TreeNode buildTree_2(int[] postorder, int postStart, int postEnd,
+                                 int[] inorder, int inStart, int inEnd) {
+        if (postStart > postEnd || inStart > inEnd) return null;
+
+        int rootVal = postorder[postEnd];
+
+        TreeNode root = new TreeNode(rootVal);
+
+        int index = inorderMap_2.get(rootVal);
+
+        int leftSubtreeSize = index - inStart;
+        root.left = buildTree_2(postorder, postStart, postStart + leftSubtreeSize - 1,
+                inorder, inStart, index - 1);
+        root.right = buildTree_2(postorder, postStart + leftSubtreeSize, postEnd - 1,
+                inorder, index + 1, inEnd);
+
+        return root;
+    }
+
+    // 25.11.19 - 3 填充每个节点的下一个右侧节点指针 II leetcode - 117
+    class Node {
+        public int val;
+        public Node left;
+        public Node right;
+        public Node next;
+
+        public Node() {}
+
+        public Node(int _val) {
+            val = _val;
+        }
+
+        public Node(int _val, Node _left, Node _right, Node _next) {
+            val = _val;
+            left = _left;
+            right = _right;
+            next = _next;
+        }
+    };
+
+    public Node connect(Node root) {
+        if (root == null) return null;
+        Deque <Node> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()){
+            int size = queue.size();
+            while (size > 0){
+                Node node = queue.poll();
+                if (node == null) continue;
+                node.next = size > 1 ? queue.peek() : null;
+                if (node.left != null) {
+                    queue.add(node.left);
+                }
+                if (node.right != null) {
+                    queue.add(node.right);
+                }
+                size--;
+            }
+        }
+        return root;
+    }
 
 }
