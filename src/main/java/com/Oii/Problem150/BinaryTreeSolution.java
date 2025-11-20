@@ -236,4 +236,50 @@ public class BinaryTreeSolution {
         return root;
     }
 
+    // 25.11.19 - 1 二叉树的展开 leetcode - 114
+    public void flatten(TreeNode root) {
+        if (root == null) return;
+        sort(root);
+    }
+
+    public TreeNode sort(TreeNode root) {
+        if (root == null) return null;
+        TreeNode leftEnd = sort(root.left);
+        sort(root.right);
+        if (leftEnd != null) {
+            leftEnd.right = root.right;
+            root.right = root.left;
+            root.left = null;
+        }
+
+
+        while (root.right != null) {
+            root = root.right;
+        }
+        return root;
+    }
+
+    // 25.11.19 - 2 路径总和 leetcode - 112
+    public boolean hasPathSum(TreeNode root, int targetSum){
+        return hasPathSum(root, targetSum, 0);
+    }
+
+    public boolean hasPathSum(TreeNode root, int targetSum, int sum){
+        if (root == null) return false;
+        if (sum + root.val == targetSum && root.left == null && root.right == null) return true;
+        boolean left = hasPathSum(root.left, targetSum, sum + root.val);
+        boolean right = hasPathSum(root.right, targetSum, sum + root.val);
+        return left || right;
+    }
+
+    // 25.11.19 - 3 求根节点到叶节点数字之和 leetcode - 129
+    public int sumNumbers(TreeNode root) {
+        return sumNumbers(root, 0);
+    }
+    public int sumNumbers(TreeNode root, int sum){
+        if (root == null) return 0;
+        sum = sum * 10 + root.val;
+        if (root.left == null && root.right == null) return sum;
+        return sumNumbers(root.left, sum) + sumNumbers(root.right, sum);
+    }
 }
