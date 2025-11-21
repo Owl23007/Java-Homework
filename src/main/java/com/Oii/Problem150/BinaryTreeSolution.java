@@ -1,5 +1,7 @@
 package com.Oii.Problem150;
 
+import com.sun.source.tree.Tree;
+
 import java.util.*;
 
 public class BinaryTreeSolution {
@@ -200,7 +202,8 @@ public class BinaryTreeSolution {
         public Node right;
         public Node next;
 
-        public Node() {}
+        public Node() {
+        }
 
         public Node(int _val) {
             val = _val;
@@ -212,15 +215,17 @@ public class BinaryTreeSolution {
             right = _right;
             next = _next;
         }
-    };
+    }
+
+    ;
 
     public Node connect(Node root) {
         if (root == null) return null;
-        Deque <Node> queue = new LinkedList<>();
+        Deque<Node> queue = new LinkedList<>();
         queue.add(root);
-        while (!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             int size = queue.size();
-            while (size > 0){
+            while (size > 0) {
                 Node node = queue.poll();
                 if (node == null) continue;
                 node.next = size > 1 ? queue.peek() : null;
@@ -236,7 +241,7 @@ public class BinaryTreeSolution {
         return root;
     }
 
-    // 25.11.19 - 1 二叉树的展开 leetcode - 114
+    // 25.11.20 - 1 二叉树的展开 leetcode - 114
     public void flatten(TreeNode root) {
         if (root == null) return;
         sort(root);
@@ -259,12 +264,12 @@ public class BinaryTreeSolution {
         return root;
     }
 
-    // 25.11.19 - 2 路径总和 leetcode - 112
-    public boolean hasPathSum(TreeNode root, int targetSum){
+    // 25.11.20 - 2 路径总和 leetcode - 112
+    public boolean hasPathSum(TreeNode root, int targetSum) {
         return hasPathSum(root, targetSum, 0);
     }
 
-    public boolean hasPathSum(TreeNode root, int targetSum, int sum){
+    public boolean hasPathSum(TreeNode root, int targetSum, int sum) {
         if (root == null) return false;
         if (sum + root.val == targetSum && root.left == null && root.right == null) return true;
         boolean left = hasPathSum(root.left, targetSum, sum + root.val);
@@ -272,14 +277,104 @@ public class BinaryTreeSolution {
         return left || right;
     }
 
-    // 25.11.19 - 3 求根节点到叶节点数字之和 leetcode - 129
+    // 25.11.20 - 3 求根节点到叶节点数字之和 leetcode - 129
     public int sumNumbers(TreeNode root) {
         return sumNumbers(root, 0);
     }
-    public int sumNumbers(TreeNode root, int sum){
+
+    public int sumNumbers(TreeNode root, int sum) {
         if (root == null) return 0;
         sum = sum * 10 + root.val;
         if (root.left == null && root.right == null) return sum;
         return sumNumbers(root.left, sum) + sumNumbers(root.right, sum);
     }
+
+    // 25.11.21 - 1 二叉树的最大路径和 leetcode - 124
+    private int maxSum = Integer.MIN_VALUE;
+
+    public int maxPathSum(TreeNode root) {
+        maxPathSumHelper(root);
+        return maxSum;
+    }
+
+    private int maxPathSumHelper(TreeNode root) {
+        if (root == null) return 0;
+
+        // 递归计算左右子树的最大贡献值，若为负则取0表示不选该路径
+        int left = Math.max(0, maxPathSumHelper(root.left));
+        int right = Math.max(0, maxPathSumHelper(root.right));
+
+        // 当前节点作为顶点的路径最大值
+        int currentMax = root.val + left + right;
+
+        // 更新全局最大值
+        maxSum = Math.max(maxSum, currentMax);
+
+        // 返回当前节点能向上提供的最大路径和
+        return root.val + Math.max(left, right);
+    }
+
+    // 25.11.21 - 2 二叉搜索树迭代器 leetcode - 173
+    class BSTIterator {
+        List<TreeNode> nodeList;
+        int index;
+
+        public BSTIterator(TreeNode root) {
+            nodeList = new ArrayList<>();
+            index = 0;
+            inorderTraversal(root);
+        }
+
+        private void inorderTraversal(TreeNode node) {
+            if (node != null) {
+                inorderTraversal(node.left);
+                nodeList.add(node);
+                inorderTraversal(node.right);
+            }
+        }
+
+        public int next() {
+            return nodeList.get(index++).val;
+        }
+
+        public boolean hasNext() {
+            return index < nodeList.size();
+        }
+    }
+
+    // 25.11.21 - 3 完全二叉树的节点个数 leetcode - 222
+    public int countNodes(TreeNode root) {
+        if (root == null) return 0;
+        TreeNode point = root;
+        int countR = 1;
+        while(point.right != null){
+            countR++;
+            point = point.right;
+        }
+
+        point = root;
+        int countL = 1;
+        while (point.left != null){
+            countL ++;
+            point = point.left;
+        }
+
+        if (countL == countR) return (1 << countL) - 1;
+
+        return 1 + countNodes(root.left) + countNodes(root.right);
+    }
+
+    // 25.11.21 - 4 二叉树的最近公共祖先 leetcode - 236
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null) return null;
+        if (root == p || root == q) return root; // 递归终止条件
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p,q);
+        if (left != null && right != null){
+            return root;
+        }
+        return left != null ? left : right;
+    }
 }
+
+
