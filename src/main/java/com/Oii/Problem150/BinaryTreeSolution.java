@@ -347,15 +347,15 @@ public class BinaryTreeSolution {
         if (root == null) return 0;
         TreeNode point = root;
         int countR = 1;
-        while(point.right != null){
+        while (point.right != null) {
             countR++;
             point = point.right;
         }
 
         point = root;
         int countL = 1;
-        while (point.left != null){
-            countL ++;
+        while (point.left != null) {
+            countL++;
             point = point.left;
         }
 
@@ -369,11 +369,74 @@ public class BinaryTreeSolution {
         if (root == null) return null;
         if (root == p || root == q) return root; // 递归终止条件
         TreeNode left = lowestCommonAncestor(root.left, p, q);
-        TreeNode right = lowestCommonAncestor(root.right, p,q);
-        if (left != null && right != null){
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if (left != null && right != null) {
             return root;
         }
         return left != null ? left : right;
+    }
+
+    //
+    public List<Integer> rightSideView(TreeNode root) {
+        if (root == null) return new ArrayList<>();
+        Deque<TreeNode> stack = new LinkedList<>();
+
+        stack.add(root);
+
+        List<Integer> res = new ArrayList<>();
+        res.add(root.val);
+
+
+        int size = 1;
+        while (!stack.isEmpty()) {
+            TreeNode node = stack.poll();
+            size--;
+
+            if (node.right != null) {
+                stack.add(node.right);
+            }
+            if (node.left != null) {
+                stack.add(node.left);
+            }
+            if (size == 0 && stack.peek() != null) {
+                res.add(stack.peek().val);
+                size = stack.size();
+            }
+        }
+        return res;
+    }
+
+    public List<Double> averageOfLevels(TreeNode root) {
+        if (root == null) return new ArrayList<>();
+        Deque<TreeNode> stack = new LinkedList<>();
+
+        stack.add(root);
+
+        List<Double> res = new ArrayList<>();
+
+        int size = 1;
+        int count = 0;
+        double sum = 0.00;
+        while (!stack.isEmpty()) {
+            TreeNode node = stack.poll();
+            count++;
+            sum += node.val;
+
+            if (node.right != null) {
+                stack.add(node.right);
+            }
+            if (node.left != null) {
+                stack.add(node.left);
+            }
+            if (size == count) {
+                double avg  = sum / size;
+                sum = 0.00;
+                res.add(avg);
+                size = stack.size();
+                count = 0;
+            }
+        }
+        return res;
     }
 }
 
