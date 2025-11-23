@@ -376,7 +376,7 @@ public class BinaryTreeSolution {
         return left != null ? left : right;
     }
 
-    //
+    // 25.11.22 - 1  二叉树的右视图 leetcode - 199
     public List<Integer> rightSideView(TreeNode root) {
         if (root == null) return new ArrayList<>();
         Deque<TreeNode> stack = new LinkedList<>();
@@ -406,6 +406,7 @@ public class BinaryTreeSolution {
         return res;
     }
 
+    // 25.11.22 - 2 二叉树的层平均值 leetcode - 637
     public List<Double> averageOfLevels(TreeNode root) {
         if (root == null) return new ArrayList<>();
         Deque<TreeNode> stack = new LinkedList<>();
@@ -436,6 +437,75 @@ public class BinaryTreeSolution {
                 count = 0;
             }
         }
+        return res;
+    }
+
+    // 25.11.23 - 1 二叉树的层序遍历 leetcode - 102
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        if(root == null) return new ArrayList<>();
+        Deque<TreeNode> stack = new LinkedList<>();
+
+        stack.add(root);
+        int size = 1;
+        List<List<Integer>> res = new ArrayList<>();
+
+        List<Integer> list = new ArrayList<>();
+        while (!stack.isEmpty()){
+            TreeNode node = stack.poll();
+            size--;
+
+            list.add(node.val);
+            if (node.left != null) {
+                stack.add(node.left);
+            }
+            if (node.right != null) {
+                stack.add(node.right);
+            }
+
+            if (size == 0) {
+                res.add(list);
+                list = new ArrayList<>();
+                size = stack.size();
+            }
+        }
+
+        return res;
+    }
+
+    // 25.11.23 - 2 二叉树的锯齿形层序遍历 leetcode - 103
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        if(root == null) return new ArrayList<>();
+        Deque<TreeNode> stack = new LinkedList<>();
+
+        stack.add(root);
+        int size = 1;
+        boolean direct = true;
+        List<List<Integer>> res = new ArrayList<>();
+
+        List<Integer> list = new ArrayList<>();
+        while (!stack.isEmpty()){
+            TreeNode node = stack.poll();
+            size--;
+
+            list.add(node.val);
+            if (node.left != null) {
+                stack.add(node.left);
+            }
+            if (node.right != null) {
+                stack.add(node.right);
+            }
+
+            if (size == 0) {
+                res.add(list);
+                list = new ArrayList<>();
+                size = stack.size();
+                direct = !direct;
+                if (direct) {
+                    Collections.reverse(res.getLast());
+                }
+            }
+        }
+
         return res;
     }
 }
