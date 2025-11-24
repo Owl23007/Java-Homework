@@ -508,6 +508,68 @@ public class BinaryTreeSolution {
 
         return res;
     }
+
+    // 25.11.24 - 1 二叉搜索树的最小绝对差 leetcode - 530
+    private Integer prev = null;
+    private int minDiff = Integer.MAX_VALUE;
+
+    public int getMinimumDifference(TreeNode root) {
+        prev = null;
+        minDiff = Integer.MAX_VALUE;
+        inorder(root);
+        return minDiff;
+    }
+
+    private void inorder(TreeNode node) {
+        if (node == null) return;
+
+        inorder(node.left);
+
+        if (prev != null) {
+            minDiff = Math.min(minDiff, node.val - prev);
+        }
+        prev = node.val;
+
+        inorder(node.right);
+    }
+
+    // 25.11.24 - 2 二叉搜索树中第 K 小的元素 leetcode - 230
+    int count = 0;
+    int target;
+    public int kthSmallest(TreeNode root, int k) {
+        count = 0;
+        inorderSearch(root, k);
+
+        return target;
+    }
+
+    public void inorderSearch(TreeNode root, int k) {
+        if (root == null) return;
+        inorderSearch(root.left, k);
+        count++;
+        if (count == k) {
+            target = root.val;
+            return;
+        }
+        inorderSearch(root.right, k);
+        return;
+    }
+
+    // 25.11.24 - 3 验证二叉搜索树 leetcode - 98
+    public boolean isValidBST(TreeNode root) {
+        return isValidBST(root, Long.MIN_VALUE, Long.MAX_VALUE);
+    }
+
+    private boolean isValidBST(TreeNode node, long min, long max) {
+        if (node == null) return true;
+
+        if (node.val <= min || node.val >= max) {
+            return false;
+        }
+
+        return isValidBST(node.left, min, node.val) &&
+                isValidBST(node.right, node.val, max);
+    }
 }
 
 
