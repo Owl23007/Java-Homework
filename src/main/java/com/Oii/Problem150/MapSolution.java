@@ -398,4 +398,119 @@ public class MapSolution {
         state[node] = 2; // 标记为已访问完成（VISITED）
         topologicalOrder[orderIndex--] = node; // 逆序入栈
     }
+
+    // 25.11.09 - 1 蛇梯棋 leetcode - 909
+    public int snakesAndLadders(int[][] board) {
+        int n = board.length;
+        int[] coordinates = new int[n * n + 1];
+
+        boolean direction = true;
+        int index = 1;
+        for (int i = n - 1; i >= 0; i--) {
+            if (direction) {
+                for (int j = 0; j < n; j++) {
+                    coordinates[index++] = board[i][j];
+                }
+            } else {
+                for (int j = n - 1; j >= 0; j--) {
+                    coordinates[index++] = board[i][j];
+                }
+            }
+            direction = !direction;
+        }
+
+        boolean[] visited = new boolean[n * n + 1];
+        Deque<Integer> queue = new LinkedList<>();
+        queue.add(1);
+        visited[1] = true;
+
+        int step = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            step++; // 进入新的一层，步数 +1
+            for (int s = 0; s < size; s++) {
+                int curr = queue.poll();
+
+                for (int i = 1; i <= 6; i++) {
+                    int next = curr + i;
+                    if (next > n * n) break; // 超出，后续 i 更大，break
+
+                    int dest = coordinates[next] != -1 ? coordinates[next] : next;
+
+                    if (dest == n * n) {
+                        return step;
+                    }
+
+                    if (!visited[dest]) {
+                        visited[dest] = true;
+                        queue.add(dest);
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    // 25.11.09 - 2 最小基因变化 leetcode - 433
+    public int minMutation(String startGene, String endGene, String[] bank) {
+        // 1. 查找 endGene 是否在 bank 中
+        boolean tag = true;
+        for (String s : bank) {
+            if (s.equals(endGene)) {
+                tag = false;
+                break;
+            }
+        }
+        if (tag) {
+            return -1;
+        }
+
+        // 2. 层次遍历
+        int[] visited = new int[bank.length];
+        int step = 0;
+        Deque<String> list = new LinkedList<>();
+        list.add(startGene);
+
+        while (!list.isEmpty()) {
+            int size = list.size();
+            step++;
+            for (int i = 0; i < size; i++) {
+                String cur = list.poll();
+                for (int j = 0; j < bank.length; j++) {
+                    if (visited[j] == 1) {
+                        continue;
+                    }
+                    if (!isNeighbour(cur, bank[j])) {
+                        continue;
+                    }
+                    if (bank[j].equals(endGene)) {
+                        return step;
+                    }
+
+                    visited[j] = 1;
+                    list.add(bank[j]);
+                }
+            }
+        }
+        return -1;
+    }
+
+    private static boolean isNeighbour(String a, String b) {
+        if (a.length() != b.length()) {
+            return false;
+        }
+        if (a.equals(b)) {
+            return false;
+        }
+        // 判断 a 和 b 是否相邻
+        int count = 0;
+        int n = a.length();
+        for (int i = 0; i < n; i++) {
+            if (a.charAt(i) != b.charAt(i)) {
+                count++;
+            }
+        }
+        return count == 1;
+    }
+
 }
