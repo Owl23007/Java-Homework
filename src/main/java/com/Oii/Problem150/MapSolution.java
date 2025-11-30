@@ -513,4 +513,97 @@ public class MapSolution {
         return count == 1;
     }
 
+
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        Set<String> wordSet = new HashSet<>(wordList);
+        if (!wordSet.contains(endWord)) {
+            return 0;
+        }
+
+        Queue<String> queue = new LinkedList<>();
+        queue.offer(beginWord);
+        Set<String> visited = new HashSet<>();
+        visited.add(beginWord);
+
+        int steps = 0;
+        int wordLen = beginWord.length();
+
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            steps++;
+            for (int i = 0; i < size; i++) {
+                String cur = queue.poll();
+                if (cur.equals(endWord)) {
+                    return steps;
+                }
+
+                // 生成所有可能的邻居（变换每个位置为 a-z）
+                char[] chars = cur.toCharArray();
+                for (int j = 0; j < wordLen; j++) {
+                    char original = chars[j];
+                    for (char c = 'a'; c <= 'z'; c++) {
+                        if (c == original) continue;
+                        chars[j] = c;
+                        String next = new String(chars);
+                        if (wordSet.contains(next) && !visited.contains(next)) {
+                            visited.add(next);
+                            queue.offer(next);
+                        }
+                    }
+                    chars[j] = original; // 恢复
+                }
+            }
+        }
+        return 0;
+    }
+
+    class Trie {
+        private static final int END_INDEX = 26;
+        private final Trie[] children; // 长度 27：0-25 是 a-z，26 是结束标记
+
+        public Trie() {
+            children = new Trie[27]; // 初始化为 null
+        }
+
+        public void insert(String word) {
+            insert(word, 0);
+        }
+
+        private void insert(String word, int idx) {
+            if (idx == word.length()) {
+                // 到达单词末尾，设置结束标记
+                children[END_INDEX] = new Trie(); // 只需非 null 即可
+                return;
+            }
+            char c = word.charAt(idx);
+            int childIndex = c - 'a';
+            if (children[childIndex] == null) {
+                children[childIndex] = new Trie();
+            }
+            children[childIndex].insert(word, idx + 1);
+        }
+
+        public boolean search(String word) {
+            Trie node = traverse(word);
+            return node != null && node.children[END_INDEX] != null;
+        }
+
+        public boolean startsWith(String prefix) {
+            return traverse(prefix) != null;
+        }
+
+        private Trie traverse(String s) {
+            if (s == null) return null;
+            Trie node = this;
+            for (char c : s.toCharArray()) {
+                int idx = c - 'a';
+                if (node == null || node.children[idx] == null) {
+                    return null;
+                }
+                node = node.children[idx];
+            }
+            return node;
+        }
+    }
+
 }
