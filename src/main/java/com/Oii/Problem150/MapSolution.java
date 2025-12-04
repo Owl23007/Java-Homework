@@ -399,7 +399,7 @@ public class MapSolution {
         topologicalOrder[orderIndex--] = node; // 逆序入栈
     }
 
-    // 25.11.09 - 1 蛇梯棋 leetcode - 909
+    // 25.11.29 - 1 蛇梯棋 leetcode - 909
     public int snakesAndLadders(int[][] board) {
         int n = board.length;
         int[] coordinates = new int[n * n + 1];
@@ -451,7 +451,7 @@ public class MapSolution {
         return -1;
     }
 
-    // 25.11.09 - 2 最小基因变化 leetcode - 433
+    // 25.11.29 - 2 最小基因变化 leetcode - 433
     public int minMutation(String startGene, String endGene, String[] bank) {
         // 1. 查找 endGene 是否在 bank 中
         boolean tag = true;
@@ -557,6 +557,7 @@ public class MapSolution {
         return 0;
     }
 
+    // 25.12.1 - 实现 Trie (前缀树) leetcode - 208
     class Trie {
         private static final int END_INDEX = 26;
         private final Trie[] children; // 长度 27：0-25 是 a-z，26 是结束标记
@@ -604,6 +605,103 @@ public class MapSolution {
             }
             return node;
         }
+    }
+
+    // 25.12.4 - 1 添加与搜索单词 - 数据结构设计 leetcode - 211
+    class WordDictionary {
+        private  boolean isEnd =false;
+        WordDictionary  []children = new WordDictionary[26];
+
+        public WordDictionary() {
+        }
+
+        public void addWord(String word) {
+            addWord(word, 0);
+        }
+
+        private void addWord(String word, int idx) {
+            if (idx == word.length()) {
+                isEnd = true;
+                return;
+            }
+            char c = word.charAt(idx);
+            int childIndex = c - 'a';
+            if (children[childIndex] == null) {
+                children[childIndex] = new WordDictionary();
+            }
+            children[childIndex].addWord(word, idx + 1);
+        }
+
+        public boolean search(String word) {
+            return search(word, 0);
+        }
+
+        private boolean search(String word, int idx) {
+            if (idx == word.length()) {
+                return isEnd;
+            }
+            char c = word.charAt(idx);
+            if (c == '.') {
+                for (int i = 0; i < 26; i++) {
+                    if (children[i] != null && children[i].search(word, idx + 1)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            int childIndex = c - 'a';
+            if (children[childIndex] == null) {
+                return false;
+            }
+            return children[childIndex].search(word, idx + 1);
+        }
+    }
+
+    // 25.12.4 - 2 单词搜索 II leetcode - 212
+    public List<String> findWords(char[][] board, String[] words) {
+        Set<String> res = new HashSet<>();
+
+        int size = res.size();
+
+        for (String word : words) {
+            int[] visited = new int[board.length * board[0].length];
+            for (int i = 0; i < board.length; i++) {
+                for (int j = 0; j < board[0].length; j++) {
+                    if (board[i][j] == word.charAt(0)) {
+                        bfs(board, word,0, res,visited,i,j);
+                        visited[i * board[0].length + j] = 0;
+                        if (res.size() > size) {
+                            break;
+                        }
+                    }
+                }
+                if (res.size() > size) {
+                    break;
+                }
+            }
+            size = res.size();
+        }
+        return new ArrayList<>(res);
+    }
+
+    private void bfs(char[][] board, String word,int idx, Set<String> res, int[] visited, int i, int j) {
+        if (idx == word.length()) {
+            res.add(word);
+            return;
+        }
+        if (i < 0 || i >= board.length || j < 0 || j >= board[0].length || visited[i * board[0].length + j] == 1) {
+            return;
+        }
+        if (board[i][j] != word.charAt(idx)) {
+            return;
+        }
+        visited[i * board[0].length + j] = 1;
+        bfs(board, word, idx + 1, res, visited, i - 1, j); // 上
+        bfs(board, word, idx + 1, res, visited, i + 1, j); // 下
+        bfs(board, word, idx + 1, res, visited, i, j - 1); // 左
+        bfs(board, word, idx + 1, res, visited, i, j + 1); // 右
+        visited[i * board[0].length + j] = 0;
+
     }
 
 }
